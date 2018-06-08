@@ -25,3 +25,7 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+bin/main/application.yml
+*.class
+bin/main/ehcache.xml
+bin/main/log4j.properties
