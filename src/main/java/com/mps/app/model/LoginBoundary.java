@@ -3,6 +3,11 @@
  */
 package com.mps.app.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import org.hibernate.envers.Audited;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,6 +26,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 @JsonPropertyOrder({ "email", "password" })
+@Entity
+@Audited
+@Table(name = "Login")
 public class LoginBoundary {
 
 	@JsonProperty("email")
