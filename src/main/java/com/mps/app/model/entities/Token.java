@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.mps.app.model;
+package com.mps.app.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

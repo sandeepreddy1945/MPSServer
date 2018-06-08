@@ -1,0 +1,5 @@
+Login Json :
+{"email":"sandeepreddy@gmail.com","password":"pass"}
+
+Register Json
+{"terms":true,"fullName":"Sandeep Reddy","email":"sandeepreddy.battula@gmail.com","password":"password","confirmPassword":"password"}
