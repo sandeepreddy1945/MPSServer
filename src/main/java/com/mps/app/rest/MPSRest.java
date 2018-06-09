@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mps.app.model.entities.LoginBoundary;
+import com.mps.app.model.entities.MemberBoundary;
 import com.mps.app.model.entities.RegisterBoundary;
 import com.mps.app.model.entities.Token;
 import com.mps.app.service.LoginService;
+import com.mps.app.service.MemberService;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -44,6 +46,9 @@ public class MPSRest {
 
 	@Autowired
 	private LoginService loginService;
+
+	@Autowired
+	private MemberService memberService;
 
 	@ApiOperation(value = "Consumes a login String and authenticates it.", response = ResponseEntity.class, nickname = "Login Validator")
 	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
@@ -92,5 +97,40 @@ public class MPSRest {
 		} else {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
+	}
+
+	@ApiOperation(value = "Consumes a Email String and Resends the User a new password.", response = ResponseEntity.class, nickname = "Forgot Password Endpoint")
+	@ApiModelProperty(example = "{\"email\":\"sandeepreddy.battula@gmail.com\"}", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/auth/request-pass", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> forgotPassword(@RequestBody String forgotPassStr) throws IOException {
+		LoginBoundary loginBoundary = mapper.readerFor(LoginBoundary.class).readValue(forgotPassStr);
+
+		boolean isUserExists = loginService.checkIfUserExists(loginBoundary.getEmail());
+		if (isUserExists) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+	}
+
+	@ApiOperation(value = "Consumes a Reset String and Resets the User password.", response = ResponseEntity.class, nickname = "Reset Password Endpoint")
+	@ApiModelProperty(example = "{\"email\":\"sandeepreddy.battula@gmail.com\"}", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/auth/reset-pass", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> resetPassword(@RequestBody String resetPass) throws IOException {
+		// for now needs more understanding on this
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Consumes save member string and saves the member", response = ResponseEntity.class, nickname = "Reset Password Endpoint")
+	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/api/member/save", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> saveMember(@RequestBody String saveMember) throws IOException {
+		MemberBoundary member = mapper.readerFor(MemberBoundary.class).readValue(saveMember);
+
+		memberService.saveMember(member);
+		return new ResponseEntity<>(mapper.writeValueAsString(member), HttpStatus.OK);
 	}
 }

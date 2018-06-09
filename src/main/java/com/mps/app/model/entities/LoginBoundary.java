@@ -41,7 +41,8 @@ import lombok.Setter;
 @Audited
 @Table(name = "Login", indexes = { @Index(columnList = "loginId") })
 @NamedQueries(value = {
-		@NamedQuery(name = "@ValidateLogin", query = "from LoginBoundary l where lower(l.email) = :email and l.password= :pass") })
+		@NamedQuery(name = "@ValidateLogin", query = "from LoginBoundary l where lower(l.email) = :email and l.password= :pass"),
+		@NamedQuery(name = "@CheckUserExistance", query = "from LoginBoundary l where lower(l.email) = :email") })
 public class LoginBoundary implements Serializable {
 
 	/**

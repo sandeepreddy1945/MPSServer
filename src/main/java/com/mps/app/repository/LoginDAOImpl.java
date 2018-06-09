@@ -3,8 +3,6 @@
  */
 package com.mps.app.repository;
 
-import static org.assertj.core.api.Assertions.useRepresentation;
-
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -22,6 +20,7 @@ import com.mps.app.model.entities.RegisterBoundary;
  *
  */
 @Repository
+@SuppressWarnings("unchecked")
 public class LoginDAOImpl implements LoginDAO {
 
 	@PersistenceContext
@@ -35,6 +34,7 @@ public class LoginDAOImpl implements LoginDAO {
 				.setParameter("pass", lb.getPassword());
 
 		List<LoginBoundary> loginBoundaries = query.getResultList();
+		session.getTransaction().commit();
 		return loginBoundaries == null ? Boolean.FALSE : loginBoundaries.size() > 0 ? Boolean.TRUE : Boolean.FALSE;
 	}
 
@@ -66,6 +66,17 @@ public class LoginDAOImpl implements LoginDAO {
 			session.getTransaction().commit();
 			return true;
 		}
+	}
+
+	@Override
+	public boolean checkIfUserExists(String loginEmail) {
+		Session session = entityManager.unwrap(Session.class);
+		session.beginTransaction();
+		Query query = session.getNamedQuery("@CheckUserExistance").setParameter("email", loginEmail.toLowerCase());
+
+		List<LoginBoundary> loginBoundaries = query.getResultList();
+		session.getTransaction().commit();
+		return loginBoundaries == null ? Boolean.FALSE : loginBoundaries.size() > 0 ? Boolean.TRUE : Boolean.FALSE;
 	}
 
 }

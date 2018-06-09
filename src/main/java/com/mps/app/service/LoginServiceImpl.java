@@ -28,13 +28,18 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public void addUser(LoginBoundary loginBoundary) {
-		loginDAO.addUser(loginBoundary);		
+		loginDAO.addUser(loginBoundary);
 	}
 
 	@Override
 	public boolean registerUser(RegisterBoundary registerBoundary) {
 		return loginDAO.registerUser(registerBoundary);
-		
+
+	}
+
+	@Override
+	public boolean checkIfUserExists(String loginEmail) {
+		return loginDAO.checkIfUserExists(loginEmail);
 	}
 
 }

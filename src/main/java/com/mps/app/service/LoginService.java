@@ -17,4 +17,6 @@ public interface LoginService {
 	public void addUser(LoginBoundary loginBoundary);
 	
 	public boolean registerUser(RegisterBoundary registerBoundary);
+	
+	public boolean checkIfUserExists(String loginEmail);
 }
