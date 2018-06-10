@@ -5,11 +5,16 @@ package com.mps.app.rest;
 
 import java.io.IOException;
 import java.security.Key;
+import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -131,6 +136,52 @@ public class MPSRest {
 		MemberBoundary member = mapper.readerFor(MemberBoundary.class).readValue(saveMember);
 
 		memberService.saveMember(member);
+		return new ResponseEntity<>(mapper.writeValueAsString(member), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Consumes Edit Member Set string and saves the member", response = ResponseEntity.class, nickname = "Reset Password Endpoint")
+	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/api/member/update", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> saveEditMember(@RequestBody String saveMember) throws IOException, JSONException {
+		JSONArray array = new JSONArray(saveMember);
+		MemberBoundary oldMbr = mapper.readerFor(MemberBoundary.class).readValue(array.getString(0));
+		MemberBoundary newMbr = mapper.readerFor(MemberBoundary.class).readValue(array.getString(1));
+
+		memberService.editMember(oldMbr, newMbr);
+		return new ResponseEntity<>(mapper.writeValueAsString(newMbr), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Fetches all the Members and Posts it.", response = ResponseEntity.class, nickname = "Reset Password Endpoint")
+	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/api/member/reteriveAll", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<String> reteriveAllMembers() throws IOException, JSONException {
+		List<MemberBoundary> memberBoundaries = memberService.retrieveMembers();
+		return new ResponseEntity<>(mapper.writeValueAsString(memberBoundaries), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Delte's a member based on the Portal Id", response = ResponseEntity.class, nickname = "Reset Password Endpoint")
+	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/api/member/deleteMember/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<String> deleteMemberByPotalId(@PathVariable("id") String portalId)
+			throws IOException, JSONException {
+		if (portalId != null) {
+			memberService.deleteMember(portalId);
+			return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		} else {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+	}
+
+	@ApiOperation(value = "Delte's a member based on the Member Object received and uses from it Portal Id", response = ResponseEntity.class, nickname = "Reset Password Endpoint")
+	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/api/member/deleteMember", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<String> deleteMember(@RequestBody String deleteMember) throws IOException, JSONException {
+		MemberBoundary member = mapper.readerFor(MemberBoundary.class).readValue(deleteMember);
+		memberService.deleteMember(member);
 		return new ResponseEntity<>(mapper.writeValueAsString(member), HttpStatus.OK);
 	}
 }

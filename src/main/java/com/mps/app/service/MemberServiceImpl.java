@@ -43,4 +43,9 @@ public class MemberServiceImpl implements MemberService {
 		return memberDAO.retrieveMembers();
 	}
 
+	@Override
+	public void deleteMember(String portalId) {
+		memberDAO.deleteMember(portalId);
+	}
+
 }

@@ -41,7 +41,8 @@ import lombok.Setter;
 @NamedQueries({ @NamedQuery(name = "@retriveList", query = "from MemberBoundary m"),
 		@NamedQuery(name = "@updateMember", query = "update MemberBoundary m set m.portalId = :portalId, m.fullName = :fullName, "
 				+ " m.email = :email, m.designation = :designation, m.experience = :experience where m.portalId = :oldPortalId"),
-		@NamedQuery(name = "@searchMember", query = "from MemberBoundary m where m.portalId = :portalId") })
+		@NamedQuery(name = "@searchMember", query = "from MemberBoundary m where m.portalId = :portalId"),
+		@NamedQuery(name = "@deleteMember", query = "delete from MemberBoundary m where m.portalId = :portalId") })
 public class MemberBoundary {
 
 	@Id

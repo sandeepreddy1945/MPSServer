@@ -75,4 +75,13 @@ public class MemberDAOImpl implements MemberDAO {
 		return query.getResultList();
 	}
 
+	@Override
+	public void deleteMember(String portalId) {
+		Session session = entityManager.unwrap(Session.class);
+		session.beginTransaction();
+		Query query = session.getNamedQuery("@deleteMember").setParameter("portalId", portalId);
+		query.executeUpdate();
+		session.getTransaction().commit();
+	}
+
 }

@@ -18,6 +18,8 @@ public interface MemberService {
 	public void editMember(MemberBoundary oldMb, MemberBoundary newMb);
 
 	public void deleteMember(MemberBoundary mb);
+	
+	public void deleteMember(String portalId);
 
 	public List<MemberBoundary> retrieveMembers();
 }
