@@ -149,7 +149,7 @@ public class MPSRest {
 		MemberBoundary newMbr = mapper.readerFor(MemberBoundary.class).readValue(array.getString(1));
 
 		memberService.editMember(oldMbr, newMbr);
-		return new ResponseEntity<>(mapper.writeValueAsString(newMbr), HttpStatus.OK);
+		return new ResponseEntity<>(mapper.writeValueAsString(oldMbr), HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Fetches all the Members and Posts it.", response = ResponseEntity.class, nickname = "Reset Password Endpoint")
