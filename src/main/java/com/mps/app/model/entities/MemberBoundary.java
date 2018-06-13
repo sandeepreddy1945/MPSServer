@@ -9,9 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
@@ -33,8 +35,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
-@JsonPropertyOrder({ "memberId", "portalId", "fullName", "email", "designation", "isManager", "imageStr",
-		"managersPortalId", "experience" })
+@JsonPropertyOrder({ "memberId", "portalId", "fullName", "email", "designation", "isManager", "imageData",
+		"managersPortalId", "experience", "employeeId", "gender", "comments", "hobbies", "month1score", "month2score",
+		"month3score", "valueAddScore", "onQualityScore", "onTimeScore", "projectDetails", "teamName", "rating",
+		"managerDetails" })
 @Entity
 @Audited
 @Table(name = "MemberTab", indexes = { @Index(columnList = "memberId"), @Index(columnList = "portalId") })
@@ -59,13 +63,42 @@ public class MemberBoundary {
 	@JsonProperty("designation")
 	private String designation;
 	@JsonProperty("isManager")
-	private boolean isManager;
+	private String isManager;
 	@Lob
-	@JsonProperty("imageStr")
-	private String imageStr;
-	@JsonProperty("managersPortalId")
-	private String managersPortalId;
+	@JsonProperty("imageData")
+	private String imageData;
 	@JsonProperty("experience")
 	private double experience;
+
+	@JsonProperty("employeeId")
+	private String employeeId;
+	@JsonProperty("gender")
+	private String gender;
+	@JsonProperty("comments")
+	private String comments;
+	@JsonProperty("hobbies")
+	private String hobbies;
+	@JsonProperty("month1score")
+	private double month1score;
+	@JsonProperty("month2score")
+	private double month2score;
+	@JsonProperty("month3score")
+	private double month3score;
+	@JsonProperty("valueAddScore")
+	private double valueAddScore;
+	@JsonProperty("onQualityScore")
+	private double onQualityScore;
+	@JsonProperty("onTimeScore")
+	private double onTimeScore;
+	@JsonProperty("projectDetails")
+	private String projectDetails;
+	@JsonProperty("teamName")
+	private String teamName;
+	@JsonProperty("rating")
+	private String rating;
+	@JsonProperty("managerDetails")
+	@OneToOne
+	@JoinColumn(name = "managerId")
+	private ManagerDetailsBoundary managerDetailsBoundary;
 
 }
