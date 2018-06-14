@@ -6,12 +6,14 @@ package com.mps.app.model.entities;
 import java.io.Serializable;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -36,13 +38,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
-@JsonPropertyOrder({ "loginId", "email", "password", "rememberMe", "registerBoundary" })
+@JsonPropertyOrder({ "loginId", "email", "password", "rememberMe", "imageData", "registerBoundary" })
 @Entity
 @Audited
-@Table(name = "Login", indexes = { @Index(columnList = "loginId") })
+@Table(name = "Login", indexes = { @Index(columnList = "loginId"), @Index(columnList = "email") })
 @NamedQueries(value = {
 		@NamedQuery(name = "@ValidateLogin", query = "from LoginBoundary l where lower(l.email) = :email and l.password= :pass"),
-		@NamedQuery(name = "@CheckUserExistance", query = "from LoginBoundary l where lower(l.email) = :email") })
+		@NamedQuery(name = "@CheckUserExistance", query = "from LoginBoundary l where lower(l.email) = :email"),
+		@NamedQuery(name = "@resetPassword", query = "update LoginBoundary l set l.password = :pass where l.email = :email"),
+		@NamedQuery(name = "@updateUserImage", query = "update LoginBoundary l set l.imageData = :imgData where l.email = :email") })
 public class LoginBoundary implements Serializable {
 
 	/**
@@ -53,12 +57,17 @@ public class LoginBoundary implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@JsonProperty("loginId")
 	private long loginId;
+	@Column(nullable = false, unique = true)
 	@JsonProperty("email")
 	private String email;
 	@JsonProperty("password")
 	private String password;
 	@JsonProperty("rememberMe")
 	private boolean rememberMe;
+	@Lob
+	@Column(columnDefinition = "CLOB")
+	@JsonProperty("imageData")
+	private String imageData;
 	@OneToOne(cascade = CascadeType.ALL, optional = false)
 	@JoinColumn(name = "registerId")
 	@JsonProperty("registerBoundary")

@@ -19,4 +19,10 @@ public interface LoginService {
 	public boolean registerUser(RegisterBoundary registerBoundary);
 	
 	public boolean checkIfUserExists(String loginEmail);
+	
+	public void updatePassword(String emailId, String password);
+	
+	public void updateUserImage(String emailId, String imgData);
+	
+	public LoginBoundary fecthUserImage(String emailId);
 }

@@ -65,6 +65,7 @@ public class MemberBoundary {
 	@JsonProperty("isManager")
 	private String isManager;
 	@Lob
+	@Column(columnDefinition = "CLOB")
 	@JsonProperty("imageData")
 	private String imageData;
 	@JsonProperty("experience")

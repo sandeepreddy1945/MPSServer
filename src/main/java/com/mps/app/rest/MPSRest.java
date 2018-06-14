@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mps.app.annotations.RestMethodAdvice;
 import com.mps.app.model.entities.LoginBoundary;
 import com.mps.app.model.entities.MemberBoundary;
 import com.mps.app.model.entities.RegisterBoundary;
@@ -31,7 +33,6 @@ import com.mps.app.service.MemberService;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.crypto.MacProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -45,9 +46,9 @@ import io.swagger.annotations.ApiOperation;
 @Api
 public class MPSRest {
 
-	private static final SignatureAlgorithm HS512 = SignatureAlgorithm.HS512;
+	private static final SignatureAlgorithm ALGORITHM_RS256 = SignatureAlgorithm.RS256;
 	private ObjectMapper mapper = new ObjectMapper();
-	private Key macProviderKey = MacProvider.generateKey();
+	private Key RSA_PRIVATE_KEY = MPSAuthServices.getKey("PRIVATE");
 
 	@Autowired
 	private LoginService loginService;
@@ -55,6 +56,7 @@ public class MPSRest {
 	@Autowired
 	private MemberService memberService;
 
+	@RestMethodAdvice
 	@ApiOperation(value = "Consumes a login String and authenticates it.", response = ResponseEntity.class, nickname = "Login Validator")
 	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/auth/sign-in", method = RequestMethod.POST)
@@ -66,11 +68,10 @@ public class MPSRest {
 
 		if (isUserExists) {
 
-			String compactJws = Jwts.builder().setSubject(loginBoundary.getEmail()).signWith(HS512, macProviderKey)
-					.compact();
+			String compactJws = Jwts.builder().setSubject(loginBoundary.getEmail().toLowerCase())
+					.signWith(ALGORITHM_RS256, RSA_PRIVATE_KEY).compact();
 			Token token = new Token();
 			token.setToken(compactJws);
-			// Jwts.parser().setSigningKey(macProviderKey).parse(compactJws).getBody();
 
 			return new ResponseEntity<>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(token),
 					HttpStatus.ACCEPTED);
@@ -88,11 +89,11 @@ public class MPSRest {
 		RegisterBoundary registerBoundary = mapper.readerFor(RegisterBoundary.class).readValue(registerStr);
 
 		// validate user
-		boolean isUserExists = loginService.registerUser(registerBoundary);
-		if (isUserExists) {
+		boolean isUserNotExists = loginService.registerUser(registerBoundary);
+		if (isUserNotExists) {
 
-			String compactJws = Jwts.builder().setSubject(registerBoundary.getEmail()).signWith(HS512, macProviderKey)
-					.compact();
+			String compactJws = Jwts.builder().setSubject(registerBoundary.getEmail().toLowerCase())
+					.signWith(ALGORITHM_RS256, RSA_PRIVATE_KEY).compact();
 			Token token = new Token();
 			token.setToken(compactJws);
 
@@ -115,7 +116,7 @@ public class MPSRest {
 		if (isUserExists) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -123,9 +124,22 @@ public class MPSRest {
 	@ApiModelProperty(example = "{\"email\":\"sandeepreddy.battula@gmail.com\"}", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/auth/reset-pass", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> resetPassword(@RequestBody String resetPass) throws IOException {
-		// for now needs more understanding on this
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<String> resetPassword(@RequestBody String resetPass) throws IOException, JSONException {
+		JSONObject resetPassJson = new JSONObject(resetPass);
+		// retrieves the token and other stuff here.
+		String token = resetPassJson.getString("token");
+		// unparse the token submitted
+		JSONObject sub = new JSONObject(Jwts.parser().setSigningKey(RSA_PRIVATE_KEY).parse(token).getBody().toString());
+		String emailId = sub.getString("sub");
+		String password = resetPassJson.getString("password");
+		boolean isUserExists = loginService.checkIfUserExists(emailId);
+		if (isUserExists) {
+			loginService.updatePassword(emailId, password);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			// for now needs more understanding on this
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 	@ApiOperation(value = "Consumes save member string and saves the member", response = ResponseEntity.class, nickname = "Reset Password Endpoint")
@@ -183,5 +197,49 @@ public class MPSRest {
 		MemberBoundary member = mapper.readerFor(MemberBoundary.class).readValue(deleteMember);
 		memberService.deleteMember(member);
 		return new ResponseEntity<>(mapper.writeValueAsString(member), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Updates the Profile Pic of The User.", response = ResponseEntity.class, nickname = "Update Profile Pic Endpoint")
+	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/image/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<String> saveProfilePic(@RequestBody String updateImage) throws IOException, JSONException {
+		JSONObject resetPassJson = new JSONObject(updateImage);
+		// retrieves the token and other stuff here.
+		String token = resetPassJson.getString("token");
+		// unparse the token submitted
+		JSONObject sub = new JSONObject(Jwts.parser().setSigningKey(RSA_PRIVATE_KEY).parse(token).getBody().toString());
+		String emailId = sub.getString("sub");
+		String imgData = resetPassJson.getString("imageData");
+		boolean isUserExists = loginService.checkIfUserExists(emailId);
+		if (isUserExists) {
+			loginService.updateUserImage(emailId, imgData);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			// for now needs more understanding on this
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@ApiOperation(value = "Fetch the Profile Pic of The User.", response = ResponseEntity.class, nickname = "Fetch Profile Pic Endpoint")
+	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/image/fetch", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<String> fetchProfilePic(@RequestBody String fetchProfilePic)
+			throws IOException, JSONException {
+		JSONObject resetPassJson = new JSONObject(fetchProfilePic);
+		// retrieves the token and other stuff here.
+		String token = resetPassJson.getString("token");
+		// unparse the token submitted
+		JSONObject sub = new JSONObject(Jwts.parser().setSigningKey(RSA_PRIVATE_KEY).parse(token).getBody().toString());
+		String emailId = sub.getString("sub");
+		LoginBoundary user = loginService.fecthUserImage(emailId);
+		if (user.getImageData() != null && user.getImageData().length() > 0) {
+
+			return new ResponseEntity<>(mapper.writeValueAsString(user), HttpStatus.OK);
+
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 }

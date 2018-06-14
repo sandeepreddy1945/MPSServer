@@ -59,7 +59,7 @@ public class LoginDAOImpl implements LoginDAO {
 		} else {
 			session.save(registerBoundary);
 			LoginBoundary boundary = new LoginBoundary();
-			boundary.setEmail(registerBoundary.getEmail());
+			boundary.setEmail(registerBoundary.getEmail().toLowerCase());
 			boundary.setPassword(registerBoundary.getPassword());
 			boundary.setRegisterBoundary(registerBoundary);
 			session.save(boundary);
@@ -77,6 +77,39 @@ public class LoginDAOImpl implements LoginDAO {
 		List<LoginBoundary> loginBoundaries = query.getResultList();
 		session.getTransaction().commit();
 		return loginBoundaries == null ? Boolean.FALSE : loginBoundaries.size() > 0 ? Boolean.TRUE : Boolean.FALSE;
+	}
+
+	@Override
+	public void updatePassword(String emailId, String password) {
+		Session session = entityManager.unwrap(Session.class);
+		session.beginTransaction();
+		Query query = session.getNamedQuery("@resetPassword").setParameter("pass", password).setParameter("email",
+				emailId);
+		query.executeUpdate();
+		session.getTransaction().commit();
+	}
+
+	@Override
+	public void updateUserImage(String emailId, String imgData) {
+		Session session = entityManager.unwrap(Session.class);
+		session.beginTransaction();
+		Query query = session.getNamedQuery("@updateUserImage").setParameter("imgData", imgData).setParameter("email",
+				emailId);
+		query.executeUpdate();
+		session.getTransaction().commit();
+
+	}
+
+	@Override
+	public LoginBoundary fecthUserImage(String emailId) {
+		Session session = entityManager.unwrap(Session.class);
+		session.beginTransaction();
+		Query query = session.getNamedQuery("@CheckUserExistance").setParameter("email", emailId.toLowerCase());
+
+		List<LoginBoundary> loginBoundaries = query.getResultList();
+		session.getTransaction().commit();
+
+		return loginBoundaries.get(0);
 	}
 
 }
