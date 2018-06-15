@@ -239,7 +239,7 @@ public class MPSRest {
 			return new ResponseEntity<>(mapper.writeValueAsString(user), HttpStatus.OK);
 
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(mapper.writeValueAsString(user), HttpStatus.NOT_FOUND);
 		}
 	}
 }

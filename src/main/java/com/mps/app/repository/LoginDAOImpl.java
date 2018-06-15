@@ -61,6 +61,7 @@ public class LoginDAOImpl implements LoginDAO {
 			LoginBoundary boundary = new LoginBoundary();
 			boundary.setEmail(registerBoundary.getEmail().toLowerCase());
 			boundary.setPassword(registerBoundary.getPassword());
+			boundary.setName(registerBoundary.getFullName());
 			boundary.setRegisterBoundary(registerBoundary);
 			session.save(boundary);
 			session.getTransaction().commit();
