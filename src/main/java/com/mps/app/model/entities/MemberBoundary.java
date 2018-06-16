@@ -11,17 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +37,7 @@ import lombok.Setter;
 @JsonInclude(value = Include.NON_NULL)
 @JsonPropertyOrder({ "memberId", "portalId", "fullName", "email", "designation", "isManager", "imageData",
 		"managersPortalId", "experience", "employeeId", "gender", "comments", "hobbies", "month1score", "month2score",
-		"month3score", "valueAddScore", "onQualityScore", "onTimeScore", "projectDetails", "teamName", "rating",
+		"month3score", "valueAddScore", "onQualityScore", "onTimeScore", "projectDetails", "teamDetails", "rating",
 		"managerDetails" })
 @Entity
 @Audited
@@ -93,12 +93,14 @@ public class MemberBoundary {
 	private double onTimeScore;
 	@JsonProperty("projectDetails")
 	private String projectDetails;
-	@JsonProperty("teamName")
-	private String teamName;
+	@JsonProperty("teamDetails")
+	@ManyToOne
+	@JoinColumn(name = "teamDetailId")
+	private TeamDetailsBoundary teamDetails;
 	@JsonProperty("rating")
 	private String rating;
 	@JsonProperty("managerDetails")
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "managerId")
 	private ManagerDetailsBoundary managerDetailsBoundary;
 
