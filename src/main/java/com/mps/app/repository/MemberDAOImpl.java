@@ -84,4 +84,13 @@ public class MemberDAOImpl implements MemberDAO {
 		session.getTransaction().commit();
 	}
 
+	@Override
+	public void updateMember(MemberBoundary mb) {
+		Session session = entityManager.unwrap(Session.class);
+		session.beginTransaction();
+		session.saveOrUpdate(mb);
+		session.getTransaction().commit();
+		
+	}
+
 }

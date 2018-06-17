@@ -21,5 +21,5 @@ public interface TeamDetailService {
 
 	public List<TeamDetailsBoundary> listAllTeam();
 
-	public void updateTeam(TeamDetailsBoundary m);
+	public void updateTeam(TeamDetailsBoundary oldM, TeamDetailsBoundary newM);
 }

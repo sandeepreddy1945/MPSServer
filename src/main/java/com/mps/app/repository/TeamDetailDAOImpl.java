@@ -62,8 +62,14 @@ public class TeamDetailDAOImpl implements TeamDetailDAO {
 	}
 
 	@Override
-	public void updateTeam(TeamDetailsBoundary m) {
-
+	public void updateTeam(TeamDetailsBoundary oldM, TeamDetailsBoundary newM) {
+		Session session = entityManager.unwrap(Session.class);
+		session.beginTransaction();
+		Query query = session.getNamedQuery("@updateTeamDetails").setParameter("teamName", newM.getTeamName())
+				.setParameter("managerPortalId", newM.getManagerPortalId())
+				.setParameter("projectName", newM.getProjectName());
+		query.executeUpdate();
+		session.getTransaction().commit();
 	}
 
 }

@@ -61,6 +61,7 @@ public class MPSRest {
 	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/auth/sign-in", method = RequestMethod.POST)
 	@ResponseBody
+	//@Authorization(value = "")
 	public ResponseEntity<String> authenticatUser(@RequestBody String loginStr) throws IOException {
 		LoginBoundary loginBoundary = mapper.readerFor(LoginBoundary.class).readValue(loginStr);
 		// validate user

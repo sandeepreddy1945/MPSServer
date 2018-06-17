@@ -4,9 +4,12 @@
 package com.mps.app.rest;
 
 import java.io.IOException;
-import java.security.Key;
+import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,17 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mps.app.annotations.RestMethodAdvice;
-import com.mps.app.model.entities.LoginBoundary;
-import com.mps.app.model.entities.Token;
-import com.mps.app.service.LoginService;
-import com.mps.app.service.MemberService;
+import com.mps.app.model.entities.ManagerDetailsBoundary;
+import com.mps.app.service.ManagerService;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 
 /**
  * @author Sandeep
@@ -38,38 +37,70 @@ import io.swagger.annotations.ApiOperation;
 @Api
 public class MPSManagerRest {
 
-	private static final SignatureAlgorithm ALGORITHM_RS256 = SignatureAlgorithm.RS256;
 	private ObjectMapper mapper = new ObjectMapper();
-	private Key RSA_PRIVATE_KEY = MPSAuthServices.getKey("PRIVATE");
 
 	@Autowired
-	private LoginService loginService;
+	private ManagerService managerService;
 
-	@Autowired
-	private MemberService memberService;
-
-	@RestMethodAdvice
-	@ApiOperation(value = "Consumes a login String and authenticates it.", response = ResponseEntity.class, nickname = "Login Validator")
+	@ApiOperation(value = "Consumes a String and adds a New Manager", response = ResponseEntity.class, nickname = "Add Manager")
 	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
-	@RequestMapping(value = "/app-api/v1/auth/sign-in", method = RequestMethod.POST)
+	@RequestMapping(value = "/app-api/v1/manager/addManager", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> authenticatUser(@RequestBody String loginStr) throws IOException {
-		LoginBoundary loginBoundary = mapper.readerFor(LoginBoundary.class).readValue(loginStr);
-		// validate user
-		boolean isUserExists = loginService.validateUser(loginBoundary);
+	public ResponseEntity<String> addNewManager(@RequestBody String addManagerStr) throws IOException {
+		ManagerDetailsBoundary mb = mapper.readerFor(ManagerDetailsBoundary.class).readValue(addManagerStr);
 
-		if (isUserExists) {
+		ManagerDetailsBoundary mbs = managerService.addNewManager(mb);
+		return new ResponseEntity<>(mapper.writeValueAsString(mbs), HttpStatus.ACCEPTED);
 
-			String compactJws = Jwts.builder().setSubject(loginBoundary.getEmail().toLowerCase())
-					.signWith(ALGORITHM_RS256, RSA_PRIVATE_KEY).compact();
-			Token token = new Token();
-			token.setToken(compactJws);
+	}
 
-			return new ResponseEntity<>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(token),
-					HttpStatus.ACCEPTED);
+	@ApiOperation(value = "Deletes A Manager Consuming his Id", response = ResponseEntity.class, nickname = "Delete Manager")
+	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/manager/delete/manager", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> deleteManagerByBoundary(@RequestBody String deleteManagerStr) throws IOException {
+		ManagerDetailsBoundary mb = mapper.readerFor(ManagerDetailsBoundary.class).readValue(deleteManagerStr);
 
-		} else {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
+		boolean mbs = managerService.deleteManager(mb);
+		return new ResponseEntity<>(mapper.writeValueAsString(mb), HttpStatus.OK);
+
+	}
+
+	@ApiOperation(value = "Deletes A Manager Consuming his Id", response = ResponseEntity.class, nickname = "Delete Manager")
+	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/manager/delete/manager", method = RequestMethod.DELETE)
+	@ResponseBody
+	public ResponseEntity<String> deleteManagerById(@Param("portalId") String portalId) throws IOException {
+		boolean mbs = managerService.deleteManager(portalId);
+		return new ResponseEntity<>(HttpStatus.OK);
+
+	}
+
+	@ApiOperation(value = "List All Available Managers", response = ResponseEntity.class, nickname = "List Managers")
+	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/manager/list", method = RequestMethod.GET)
+	@ResponseBody
+	@Authorization(value = "basic")
+	public ResponseEntity<String> retrieveAllManagers() throws IOException {
+		List<ManagerDetailsBoundary> lmd = managerService.listAllMangers();
+
+		return new ResponseEntity<>(mapper.writeValueAsString(lmd), HttpStatus.OK);
+
+	}
+
+	@ApiOperation(value = "Consumes a String Updates a Manager", response = ResponseEntity.class, nickname = "Updates Manager")
+	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
+	@RequestMapping(value = "/app-api/v1/manager/editManager", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> editManagerDetails(@RequestBody String updateTeamStr)
+			throws IOException, JSONException {
+		JSONArray array = new JSONArray(updateTeamStr);
+		ManagerDetailsBoundary oldMbr = mapper.readerFor(ManagerDetailsBoundary.class).readValue(array.getString(0));
+		ManagerDetailsBoundary newMbr = mapper.readerFor(ManagerDetailsBoundary.class).readValue(array.getString(1));
+
+		managerService.updateManagerDetails(oldMbr, newMbr);
+
+		return new ResponseEntity<String>(mapper.writeValueAsString(newMbr), HttpStatus.OK);
+
 	}
 }

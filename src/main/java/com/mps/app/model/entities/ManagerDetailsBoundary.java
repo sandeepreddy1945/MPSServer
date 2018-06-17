@@ -4,6 +4,7 @@
 package com.mps.app.model.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -20,9 +21,9 @@ import javax.persistence.Table;
 import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,7 +43,9 @@ import lombok.Setter;
 @Audited
 @Table(name = "MemberDetailsTab", indexes = { @Index(columnList = "managerId"), @Index(columnList = "portalId") })
 @NamedQueries({ @NamedQuery(name = "@listAllManagers", query = "from ManagerDetailsBoundary m"),
-		@NamedQuery(name = "@deleteManagerByPortal", query = "delete from ManagerDetailsBoundary m where m.portalId = :portalId") })
+		@NamedQuery(name = "@deleteManagerByPortal", query = "delete from ManagerDetailsBoundary m where m.portalId = :portalId"),
+		@NamedQuery(name = "@updateManagerDetail", query = "update ManagerDetailsBoundary m set m.portalId = :portalId, "
+				+ " m.designation = :designation, m.name = :name, m.email = :email, m.experience = :experience") })
 public class ManagerDetailsBoundary implements Serializable {
 
 	/**
@@ -67,7 +70,7 @@ public class ManagerDetailsBoundary implements Serializable {
 	private String email;
 	@JsonProperty("teamDetailsBoundary")
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "teamDetailId")
-	private TeamDetailsBoundary teamDetailsBoundary;
+	@JoinColumn(name = "teamsDetailsIdentity")
+	private List<TeamDetailsBoundary> teamDetailsBoundary;
 
 }

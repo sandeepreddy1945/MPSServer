@@ -19,7 +19,7 @@ public interface ManagerService {
 
 	public boolean deleteManager(String portalId);
 
-	public ManagerDetailsBoundary updateManagerDetails(ManagerDetailsBoundary m);
+	public ManagerDetailsBoundary updateManagerDetails(ManagerDetailsBoundary m, ManagerDetailsBoundary nm);
 
 	public List<ManagerDetailsBoundary> listAllMangers();
 }

@@ -4,8 +4,10 @@
 package com.mps.app.model.entities;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,9 +22,9 @@ import javax.persistence.Table;
 import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +43,9 @@ import lombok.Setter;
 @Audited
 @Table(name = "TeamDetailsTab", indexes = { @Index(columnList = "teamDetailId") })
 @NamedQueries({ @NamedQuery(name = "@lisAllTeams", query = "from TeamDetailsBoundary m"),
-		@NamedQuery(name = "@deleteTeamByName", query = "delete from TeamDetailsBoundary m where m.teamName = :teamName") })
+		@NamedQuery(name = "@deleteTeamByName", query = "delete from TeamDetailsBoundary m where m.teamName = :teamName"),
+		@NamedQuery(name = "@updateTeamDetails", query = "update TeamDetailsBoundary m set m.teamName = :teamName, "
+				+ " m.managerPortalId = :managerPortalId, m.projectName = :projectName ") })
 public class TeamDetailsBoundary implements Serializable {
 
 	/**
@@ -52,6 +56,7 @@ public class TeamDetailsBoundary implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@JsonProperty("teamDetailId")
 	private long teamDetailId;
+	@Column(unique = true, nullable = false)
 	@JsonProperty("teamName")
 	private String teamName;
 	@JsonProperty("managerPortalId")

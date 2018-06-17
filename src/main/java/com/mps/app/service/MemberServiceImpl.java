@@ -48,4 +48,10 @@ public class MemberServiceImpl implements MemberService {
 		memberDAO.deleteMember(portalId);
 	}
 
+	@Override
+	public void updateMember(MemberBoundary mb) {
+		
+		memberDAO.updateMember(mb);
+	}
+
 }

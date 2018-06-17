@@ -38,9 +38,9 @@ public class ManagerServiceImpl implements ManagerService {
 	}
 
 	@Override
-	public ManagerDetailsBoundary updateManagerDetails(ManagerDetailsBoundary m) {
+	public ManagerDetailsBoundary updateManagerDetails(ManagerDetailsBoundary m, ManagerDetailsBoundary nm) {
 
-		return managerDAO.updateManagerDetails(m);
+		return managerDAO.updateManagerDetails(m, nm);
 	}
 
 	@Override

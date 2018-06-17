@@ -22,5 +22,7 @@ public interface MemberDAO {
 	public void deleteMember(String portalId);
 
 	public List<MemberBoundary> retrieveMembers();
+	
+	public void updateMember(MemberBoundary mb);
 
 }

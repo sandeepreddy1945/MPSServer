@@ -55,9 +55,15 @@ public class ManagerDAOImpl implements ManagerDAO {
 	}
 
 	@Override
-	public ManagerDetailsBoundary updateManagerDetails(ManagerDetailsBoundary m) {
-		// TODO Auto-generated method stub
-		return m;
+	public ManagerDetailsBoundary updateManagerDetails(ManagerDetailsBoundary m, ManagerDetailsBoundary nm) {
+		Session session = entityManager.unwrap(Session.class);
+		session.beginTransaction();
+		Query query = session.getNamedQuery("@updateManagerDetail").setParameter("portalId", nm.getPortalId())
+				.setParameter("designation", nm.getDesignation()).setParameter("name", nm.getName())
+				.setParameter("email", nm.getEmail()).setParameter("experience", nm.getExperience());
+		query.executeUpdate();
+		session.getTransaction().commit();
+		return nm;
 	}
 
 	@Override
