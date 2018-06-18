@@ -3,9 +3,6 @@
  */
 package com.mps.app.model.entities;
 
-import java.util.List;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -49,7 +46,14 @@ import lombok.Setter;
 		@NamedQuery(name = "@updateMember", query = "update MemberBoundary m set m.portalId = :portalId, m.fullName = :fullName, "
 				+ " m.email = :email, m.designation = :designation, m.experience = :experience where m.portalId = :oldPortalId"),
 		@NamedQuery(name = "@searchMember", query = "from MemberBoundary m where m.portalId = :portalId"),
-		@NamedQuery(name = "@deleteMember", query = "delete from MemberBoundary m where m.portalId = :portalId") })
+		@NamedQuery(name = "@deleteMember", query = "delete from MemberBoundary m where m.portalId = :portalId"),
+		@NamedQuery(name = "@updateMemberDetail", query = "update MemberBoundary m set m.portalId = :portalId,"
+				+ " m.fullName = :fullName, m.email = :email, m.designation = :designation, m.isManager = :isManager,"
+				+ " m.imageData = :imageData, m.experience = :experience, m.employeeId = :employeeId,"
+				+ " m.gender = :gender, m.comments = :comments, m.hobbies = :hobbies, m.month1score = :month1score,"
+				+ " m.month2score = :month2score, m.month3score = :month3score, m.valueAddScore = :valueAddScore, m.onQualityScore = :onQualityScore, "
+				+ " m.onTimeScore = :onTimeScore, m.projectDetails = :projectDetails, m.teamDetails = :teamDetailId, "
+				+ " m.managerDetails = :managerId where m.portalId = :oldPortalId ") })
 public class MemberBoundary {
 
 	@Id
@@ -105,6 +109,6 @@ public class MemberBoundary {
 	@JsonProperty("managerDetails")
 	@ManyToOne
 	@JoinColumn(name = "managerId")
-	private ManagerDetailsBoundary managerDetailsBoundary;
+	private ManagerDetailsBoundary managerDetails;
 
 }
