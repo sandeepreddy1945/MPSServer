@@ -23,11 +23,17 @@ public class MemberDetailDAOImpl implements MemberDetailDAO {
 	public MemberBoundary saveUpdateMemberDetails(MemberBoundary m) {
 		Session session = entityManager.unwrap(Session.class);
 		MemberBoundary mb = this.fecthMemberDetail(m.getPortalId());
-		m.setMemberId(mb.getMemberId());
-		session.beginTransaction();
-		// session.saveOrUpdate(m);
-		session.merge(m);
-		session.getTransaction().commit();
+		// if member not found save it or else merge.
+		if (mb == null) {
+			session.beginTransaction();
+			session.save(m);
+			session.getTransaction().commit();
+		} else {
+			m.setMemberId(mb.getMemberId());
+			session.beginTransaction();
+			session.merge(m);
+			session.getTransaction().commit();
+		}
 		return m;
 	}
 
@@ -37,7 +43,7 @@ public class MemberDetailDAOImpl implements MemberDetailDAO {
 		session.beginTransaction();
 		Query query = session.createNamedQuery("@searchMember").setParameter("portalId", portalId);
 		session.getTransaction().commit();
-		if (query.getResultList() != null)
+		if (query.getResultList() != null && query.getResultList().size() > 0)
 			return (MemberBoundary) query.getResultList().get(0);
 		else
 			return null;
