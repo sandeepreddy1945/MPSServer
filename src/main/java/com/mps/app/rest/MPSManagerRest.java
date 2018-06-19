@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,6 +77,7 @@ public class MPSManagerRest {
 
 	}
 
+	@PreAuthorize("#oauth2.hasScope('foo') and #oauth2.hasScope('read')")
 	@ApiOperation(value = "List All Available Managers", response = ResponseEntity.class, nickname = "List Managers")
 	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/manager/list", method = RequestMethod.GET)
