@@ -36,8 +36,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @SwaggerDefinition
 public class SwaggerConfig {
-	public static final String AUTH_SERVER = "http://localhost:8081/spring-security-oauth-server/oauth";
-	public static final String CLIENT_ID = "fooClientIdPassword";
+	public static final String AUTH_SERVER = "http://localhost:8081/MPSOAuth2Server/oauth";
+	public static final String CLIENT_ID = "mpsadminuser";
 	public static final String CLIENT_SECRET = "secret";
 
 	@Bean
@@ -72,7 +72,7 @@ public class SwaggerConfig {
 	private SecurityScheme securityScheme() {
 		GrantType grantType = new AuthorizationCodeGrantBuilder()
 				.tokenEndpoint(new TokenEndpoint(AUTH_SERVER + "/token", "oauthtoken"))
-				.tokenRequestEndpoint(new TokenRequestEndpoint(AUTH_SERVER + "/authorize", CLIENT_ID, CLIENT_ID))
+				.tokenRequestEndpoint(new TokenRequestEndpoint(AUTH_SERVER + "/token", CLIENT_ID, CLIENT_ID))
 				.build();
 
 		SecurityScheme oauth = new OAuthBuilder().name("spring_oauth").grantTypes(Arrays.asList(grantType))
@@ -89,7 +89,7 @@ public class SwaggerConfig {
 	private AuthorizationScope[] scopes() {
 		AuthorizationScope[] scopes = { new AuthorizationScope("read", "for read operations"),
 				new AuthorizationScope("write", "for write operations"),
-				new AuthorizationScope("foo", "Access foo API") };
+				new AuthorizationScope("admin", "Admin Operations") };
 		return scopes;
 	}
 

@@ -68,7 +68,7 @@ public class LoginBoundary implements Serializable {
 	@JsonProperty("rememberMe")
 	private boolean rememberMe;
 	@JsonProperty("clientId")
-	@Column(columnDefinition="default mpsguestuser")
+	@Column(columnDefinition="varchar(100) default 'mpsguestuser'")
 	private String clientId;
 	@Lob
 	@Column(columnDefinition = "CLOB")

@@ -27,7 +27,10 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 	@Override
 	public void configure(final HttpSecurity http) throws Exception {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and().authorizeRequests()
-				.antMatchers("/swagger*", "/v2/**").access("#oauth2.hasScope('read')").anyRequest().permitAll();
+				/* .antMatchers("/swagger*", "/v2/**").access("#oauth2.hasScope('read')") */.anyRequest().permitAll();
+
+		// this bascially for working of h2 console.
+		http.headers().frameOptions().sameOrigin();
 
 	}
 
@@ -48,16 +51,6 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 		final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
 		converter.setSigningKey("123");
 		converter.setJwtClaimsSetVerifier(jwtClaimsSetVerifier());
-
-		// final Resource resource = new ClassPathResource("public.txt");
-		// String publicKey = null;
-		// try {
-		// publicKey = IOUtils.toString(resource.getInputStream(),
-		// Charset.defaultCharset());
-		// } catch (final IOException e) {
-		// throw new RuntimeException(e);
-		// }
-		// converter.setVerifierKey(publicKey);
 		return converter;
 	}
 

@@ -1,5 +1,8 @@
-spring:
+oauth2:
   client:
     jwt:
      client-scret: mpsadmin
      client-id: mpsguestuser
+basic:
+  auth:
+    client-secret: Basic c2FuZGVlcDpwYXNzd29yZA==
