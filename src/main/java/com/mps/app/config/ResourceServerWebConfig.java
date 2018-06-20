@@ -1,26 +1,24 @@
-/*package com.mps.app.mvc;
+package com.mps.app.config;
 
 import java.util.List;
 
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-*//**
- * @author Sandeep
- *
- *//*
-@SuppressWarnings("deprecation")
+@Configuration
 @EnableWebMvc
-public class WebMvcConfigureImpl extends WebMvcConfigurerAdapter {
+@ComponentScan({ "com.mps.app.*" })
+public class ResourceServerWebConfig implements WebMvcConfigurer {
 
-    
-     
+	  
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
@@ -35,7 +33,4 @@ public class WebMvcConfigureImpl extends WebMvcConfigurerAdapter {
 
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
-    
-
 }
-*/

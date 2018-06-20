@@ -1,4 +1,4 @@
-package com.mps.app;
+package com.mps.app.config;
 
 import java.util.Map;
 

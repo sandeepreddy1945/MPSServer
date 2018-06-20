@@ -1,4 +1,4 @@
-package com.mps.app;
+package com.mps.app.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
