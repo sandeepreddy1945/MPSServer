@@ -33,3 +33,4 @@ bin/main/examplejsons.txt
 bin/main/privatekey.key
 bin/main/publickey.key
 bin/main/schemas/sampleschema.json
+bin/main/application-dev.yml
