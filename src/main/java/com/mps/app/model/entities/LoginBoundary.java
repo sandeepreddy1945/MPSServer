@@ -38,7 +38,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
-@JsonPropertyOrder({ "loginId", "name", "email", "password", "rememberMe", "imageData", "registerBoundary" })
+@JsonPropertyOrder({ "loginId", "name", "email", "password", "rememberMe", "clientId", "imageData",
+		"registerBoundary" })
 @Entity
 @Audited
 @Table(name = "Login", indexes = { @Index(columnList = "loginId"), @Index(columnList = "email") })
@@ -66,6 +67,9 @@ public class LoginBoundary implements Serializable {
 	private String password;
 	@JsonProperty("rememberMe")
 	private boolean rememberMe;
+	@JsonProperty("clientId")
+	@Column(columnDefinition="default mpsguestuser")
+	private String clientId;
 	@Lob
 	@Column(columnDefinition = "CLOB")
 	@JsonProperty("imageData")
@@ -74,4 +78,5 @@ public class LoginBoundary implements Serializable {
 	@JoinColumn(name = "registerId")
 	@JsonProperty("registerBoundary")
 	private RegisterBoundary registerBoundary;
+
 }

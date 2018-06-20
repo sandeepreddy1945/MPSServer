@@ -1,0 +1,5 @@
+spring:
+  client:
+    jwt:
+     client-scret: mpsadmin
+     client-id: mpsguestuser
