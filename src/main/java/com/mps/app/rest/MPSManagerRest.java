@@ -77,7 +77,7 @@ public class MPSManagerRest {
 
 	}
 
-	@PreAuthorize("#oauth2.hasScope('foo') and #oauth2.hasScope('read')")
+	@PreAuthorize("#oauth2.hasScope('write') and #oauth2.hasScope('read') and hasAuthority('COMPANY_READ')")
 	@ApiOperation(value = "List All Available Managers", response = ResponseEntity.class, nickname = "List Managers")
 	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/manager/list", method = RequestMethod.GET)
