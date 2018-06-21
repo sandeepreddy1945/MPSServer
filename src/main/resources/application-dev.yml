@@ -1,8 +1,14 @@
 oauth2:
   client:
     jwt:
-     client-scret: mpsadmin
+     client-scret: secret
      client-id: mpsguestuser
 basic:
   auth:
     client-secret: Basic c2FuZGVlcDpwYXNzd29yZA==
+mps:
+  oauth2:
+    server:
+      host: localhost
+      port: 8081
+      servlet-context: MPSOAuth2Server
