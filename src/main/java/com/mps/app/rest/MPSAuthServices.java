@@ -17,14 +17,20 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.Base64Utils;
 
 /**
  * @author Sandeep
  *
  */
 public class MPSAuthServices {
+
+	public static BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
 
 	public static PublicKey getPublicKey()
 			throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
@@ -76,10 +82,33 @@ public class MPSAuthServices {
 		}
 	}
 
-	public static void main(String[] args)
-			throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException, IOException {
-		// MPSAuthServices.decodePublicKey();
-		// MPSAuthServices.generatePrivateKey();
+	public static Map<String, String> buildParamMap(final String userName, final String clientId,
+			final String password) {
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("grant_type", "password");
+		paramMap.put("username", userName);
+		paramMap.put("password", password);
+		paramMap.put("client_id", clientId);
+
+		return paramMap;
 	}
 
+	public static String base64ToString(String base64Str) {
+		return new String(Base64Utils.decodeFromString(base64Str));
+	}
+
+	public static String stringToBase64(String str) {
+		return Base64Utils.encodeToString(str.getBytes());
+	}
+
+	public static String buildAuthServerUrl(String host, String port, String serverContext) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("http://");
+		sb.append(host);
+		sb.append(":");
+		sb.append(port);
+		sb.append("/");
+		sb.append(serverContext);
+		return sb.toString();
+	}
 }
