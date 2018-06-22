@@ -35,6 +35,7 @@ import io.restassured.response.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Sandeep Reddy Battula
@@ -43,6 +44,7 @@ import io.swagger.annotations.ApiOperation;
 @CrossOrigin(origins = "*")
 @RestController
 @Api
+@Slf4j
 public class MPSAuthRest {
 
 	private ObjectMapper mapper = new ObjectMapper();
@@ -88,10 +90,7 @@ public class MPSAuthRest {
 	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/auth/sign-in", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> validateUser(String authData) throws IOException {
-		AuthBoundary loginBoundary = mapper.readerFor(AuthBoundary.class).readValue(authData);
-		// now make a rest call with the credentials available for authenticating the
-		// user
+	public ResponseEntity<Token> validateUser(@RequestBody AuthBoundary loginBoundary) throws IOException {
 
 		String oauthUrl = MPSAuthServices.buildAuthServerUrl(host, oauthServerport, oauthUrlContext) + "/"
 				+ oauthEndPoint;
@@ -105,24 +104,14 @@ public class MPSAuthRest {
 		final Response response = RestAssured.given().auth().preemptive().basic(clientId, clientSecret).and().with()
 				.params(paramMap).when().post(oauthUrl);
 
-		// build OAuth Boundary for Token Setting .
-		// OAuthBoundary authBoundary = new OAuthBoundary();
-		// authBoundary.setAccess_token(response.jsonPath().getString(OAuthConstants.access_token.name()));
-		// authBoundary.setRefresh_token(response.jsonPath().getString(OAuthConstants.refresh_token.name()));
-		// authBoundary.setToken_type(response.jsonPath().getString(OAuthConstants.token_type.name()));
-		// authBoundary.setOrganization(response.jsonPath().getString(OAuthConstants.organization.name()));
-		// authBoundary.setExpires_in(response.jsonPath().getLong(OAuthConstants.expires_in.name()));
-		// authBoundary.setScope(response.jsonPath().getString(OAuthConstants.scope.name()));
-		// authBoundary.setJti(response.jsonPath().getString(OAuthConstants.jti.name()));
-
 		OAuthBoundary authBoundary = mapper.readerFor(OAuthBoundary.class).readValue(response.asString());
+		log.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(authBoundary));
 
 		// set this to token boundary
 		Token token = new Token();
-		token.setToken(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(authBoundary));
+		token.setToken(authBoundary.getAccess_token());
 
-		return new ResponseEntity<String>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(token),
-				HttpStatus.OK);
+		return new ResponseEntity<Token>(token, HttpStatus.OK);
 
 	}
 
@@ -130,8 +119,7 @@ public class MPSAuthRest {
 	@ApiModelProperty(example = "{\"terms\":true,\"fullName\":\"Sandeep Reddy\",\"email\":\"sandeepreddy.battula@gmail.com\",\"password\":\"password\",\"confirmPassword\":\"password\"}", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/auth/sign-up", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> registerUser(String registerStr) throws IOException {
-		RegisterBoundary registerBoundary = mapper.readerFor(RegisterBoundary.class).readValue(registerStr);
+	public ResponseEntity<Token> registerUser(@RequestBody RegisterBoundary registerBoundary) throws IOException {
 
 		// validate user
 		boolean isUserNotExists = loginService.registerUser(registerBoundary);
@@ -162,24 +150,14 @@ public class MPSAuthRest {
 			final Response response = RestAssured.given().auth().preemptive().basic(clientId, clientSecret).and().with()
 					.params(paramMap).when().post(oauthUrl);
 
-			// build OAuth Boundary for Token Setting .
-			// OAuthBoundary authBoundary = new OAuthBoundary();
-			// authBoundary.setAccess_token(response.jsonPath().getString(OAuthConstants.access_token.name()));
-			// authBoundary.setRefresh_token(response.jsonPath().getString(OAuthConstants.refresh_token.name()));
-			// authBoundary.setToken_type(response.jsonPath().getString(OAuthConstants.token_type.name()));
-			// authBoundary.setOrganization(response.jsonPath().getString(OAuthConstants.organization.name()));
-			// authBoundary.setExpires_in(response.jsonPath().getLong(OAuthConstants.expires_in.name()));
-			// authBoundary.setScope(response.jsonPath().getString(OAuthConstants.scope.name()));
-			// authBoundary.setJti(response.jsonPath().getString(OAuthConstants.jti.name()));
-
 			OAuthBoundary authBoundary = mapper.readerFor(OAuthBoundary.class).readValue(response.asString());
+			log.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(authBoundary));
 
 			// set this to token boundary
 			Token token = new Token();
-			token.setToken(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(authBoundary));
+			token.setToken(authBoundary.getAccess_token());
 
-			return new ResponseEntity<>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(token),
-					HttpStatus.CREATED);
+			return new ResponseEntity<Token>(token, HttpStatus.CREATED);
 
 		} else {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

@@ -24,7 +24,7 @@ import lombok.Getter;
 @NoArgsConstructor
 @ToString
 @JsonInclude(value = Include.NON_NULL)
-@JsonPropertyOrder({ "email", "password" })
+@JsonPropertyOrder({ "email", "password", "rememberMe" })
 public class AuthBoundary implements Serializable{
 
 	/**
@@ -35,5 +35,7 @@ public class AuthBoundary implements Serializable{
 	private String email;
 	@JsonProperty("password")
 	private String password;
+	@JsonProperty("rememberMe")
+	private boolean rememberMe;
 
 }
