@@ -8,6 +8,9 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -39,5 +42,14 @@ public class ControllerAspect {
 		long executionTime = System.currentTimeMillis() - start;
 		System.out.println(joinPoint.getSignature() + " executed in " + executionTime + "ms");
 		return proceed;
+	}
+
+	@Before(value = "execution(* com.mps.app.rest.*.delete*(*))")
+	public void logPackageCalls(JoinPoint joinPoint) {
+		log.info("Kind of Joint Point : " + joinPoint.getKind());
+		log.info("Method Name : " + joinPoint.getSignature().getName());
+		log.info("Value Passed: " + joinPoint.getArgs()[0]);
+
+		log.info(String.valueOf((System.currentTimeMillis())));
 	}
 }

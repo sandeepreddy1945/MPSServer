@@ -22,7 +22,8 @@ import lombok.Setter;
 @ToString(includeFields = true)
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
-@JsonPropertyOrder({ "access_token", "token_type", "refresh_token", "expires_in", "scope", "organization", "jti" })
+@JsonPropertyOrder({ "access_token", "token_type", "refresh_token", "expires_in", "scope", "organization", "jti",
+		"error", "error_description" })
 public class OAuthBoundary implements Serializable {
 	/**
 	* 
@@ -43,5 +44,9 @@ public class OAuthBoundary implements Serializable {
 	private String organization;
 	@JsonProperty("jti")
 	private String jti;
+	@JsonProperty("error")
+	private String error;
+	@JsonProperty("error_description")
+	private String error_description;
 
 }

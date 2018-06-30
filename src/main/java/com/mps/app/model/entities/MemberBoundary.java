@@ -20,6 +20,8 @@ import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.mps.app.manager.ManagerDetailsBoundary;
+import com.mps.app.teamdetails.TeamDetailsBoundary;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 

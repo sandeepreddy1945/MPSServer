@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mps.app.model.entities.LoginBoundary;
+import com.mps.app.login.LoginBoundary;
+import com.mps.app.login.LoginService;
 import com.mps.app.model.entities.MemberBoundary;
-import com.mps.app.service.LoginService;
 import com.mps.app.service.MemberService;
 
 import io.jsonwebtoken.Jwts;
