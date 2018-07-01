@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,7 +31,6 @@ import com.mps.app.login.LoginService;
 import com.mps.app.rest.MPSAuthServices;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -45,8 +43,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @Api
 public class MPSRest {
-
-	private static final SignatureAlgorithm ALGORITHM_RS256 = SignatureAlgorithm.RS256;
+	
 	private ObjectMapper mapper = new ObjectMapper();
 	private Key RSA_PRIVATE_KEY = MPSAuthServices.getKey("PRIVATE");
 
