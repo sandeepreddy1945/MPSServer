@@ -107,7 +107,7 @@ public class LoginDAOImpl implements LoginDAO {
 		List<LoginBoundary> loginBoundaries = query.getResultList();
 		session.getTransaction().commit();
 
-		return loginBoundaries.get(0);
+		return loginBoundaries.size() > 0 ? loginBoundaries.get(0) : null;
 	}
 
 }

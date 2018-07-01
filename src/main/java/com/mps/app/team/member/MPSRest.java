@@ -11,14 +11,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.jwt.JwtHelper;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -93,9 +97,7 @@ public class MPSRest {
 	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/api/member/save", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> saveMember(@RequestBody String saveMember) throws IOException {
-		MemberBoundary member = mapper.readerFor(MemberBoundary.class).readValue(saveMember);
-
+	public ResponseEntity<String> saveMember(@RequestBody MemberBoundary member) throws IOException {
 		memberService.saveMember(member);
 		return new ResponseEntity<>(mapper.writeValueAsString(member), HttpStatus.OK);
 	}
@@ -117,9 +119,9 @@ public class MPSRest {
 	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/api/member/reteriveAll", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<String> reteriveAllMembers() throws IOException, JSONException {
+	public ResponseEntity<List<MemberBoundary>> reteriveAllMembers() throws IOException, JSONException {
 		List<MemberBoundary> memberBoundaries = memberService.retrieveMembers();
-		return new ResponseEntity<>(mapper.writeValueAsString(memberBoundaries), HttpStatus.OK);
+		return new ResponseEntity<List<MemberBoundary>>(memberBoundaries, HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Delte's a member based on the Portal Id", response = ResponseEntity.class, nickname = "Reset Password Endpoint")
@@ -140,10 +142,10 @@ public class MPSRest {
 	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/api/member/deleteMember", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<String> deleteMember(@RequestBody String deleteMember) throws IOException, JSONException {
-		MemberBoundary member = mapper.readerFor(MemberBoundary.class).readValue(deleteMember);
+	public ResponseEntity<MemberBoundary> deleteMember(@RequestBody MemberBoundary member) throws IOException, JSONException {
+
 		memberService.deleteMember(member);
-		return new ResponseEntity<>(mapper.writeValueAsString(member), HttpStatus.OK);
+		return new ResponseEntity<MemberBoundary>(member, HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Updates the Profile Pic of The User.", response = ResponseEntity.class, nickname = "Update Profile Pic Endpoint")
@@ -172,16 +174,14 @@ public class MPSRest {
 	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/image/fetch", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<String> fetchProfilePic(@RequestBody String fetchProfilePic)
+	public ResponseEntity<String> fetchProfilePic(@RequestHeader HttpHeaders headers)
 			throws IOException, JSONException {
-		JSONObject resetPassJson = new JSONObject(fetchProfilePic);
-		// retrieves the token and other stuff here.
-		String token = resetPassJson.getString("token");
-		// unparse the token submitted
-		JSONObject sub = new JSONObject(Jwts.parser().setSigningKey(RSA_PRIVATE_KEY).parse(token).getBody().toString());
-		String emailId = sub.getString("sub");
+
+		JSONObject jsonObject = new JSONObject(JwtHelper
+				.decode(headers.getValuesAsList("authorization").get(0).replaceAll("Bearer ", "")).getClaims());
+		String emailId = jsonObject.getString("user_name");
 		LoginBoundary user = loginService.fecthUserImage(emailId);
-		if (user.getImageData() != null && user.getImageData().length() > 0) {
+		if (user != null && user.getImageData() != null && user.getImageData().length() > 0) {
 
 			return new ResponseEntity<>(mapper.writeValueAsString(user), HttpStatus.OK);
 
