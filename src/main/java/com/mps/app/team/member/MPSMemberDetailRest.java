@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.mps.app.rest;
+package com.mps.app.team.member;
 
 import java.io.IOException;
 
@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mps.app.model.entities.MemberBoundary;
-import com.mps.app.service.MemberDetailService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -44,11 +42,11 @@ public class MPSMemberDetailRest {
 	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/api/memberdetail/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<String> saveMemberDetail(@RequestBody String member) throws IOException, JSONException {
-		MemberBoundary m = mapper.readerFor(MemberBoundary.class).readValue(member);
+	public ResponseEntity<MemberBoundary> saveMemberDetail(@RequestBody MemberBoundary m)
+			throws IOException, JSONException {
 		m = mds.saveUpdateMemberDetails(m);
 
-		return new ResponseEntity<String>(mapper.writeValueAsString(m), HttpStatus.ACCEPTED);
+		return new ResponseEntity<MemberBoundary>(m, HttpStatus.ACCEPTED);
 
 	}
 

@@ -1,17 +1,15 @@
 /**
  * 
  */
-package com.mps.app.repository;
+package com.mps.app.team.member;
 
 import java.util.List;
-
-import com.mps.app.model.entities.MemberBoundary;
 
 /**
  * @author Sandeep
  *
  */
-public interface MemberDAO {
+public interface MemberService {
 
 	public void saveMember(MemberBoundary mb);
 
@@ -24,5 +22,4 @@ public interface MemberDAO {
 	public List<MemberBoundary> retrieveMembers();
 	
 	public void updateMember(MemberBoundary mb);
-
 }

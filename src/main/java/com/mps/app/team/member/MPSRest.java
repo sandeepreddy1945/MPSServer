@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.mps.app.rest;
+package com.mps.app.team.member;
 
 import java.io.IOException;
 import java.security.Key;
@@ -25,8 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mps.app.login.LoginBoundary;
 import com.mps.app.login.LoginService;
-import com.mps.app.model.entities.MemberBoundary;
-import com.mps.app.service.MemberService;
+import com.mps.app.rest.MPSAuthServices;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

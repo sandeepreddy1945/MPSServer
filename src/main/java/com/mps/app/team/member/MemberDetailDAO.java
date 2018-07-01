@@ -1,15 +1,13 @@
 /**
  * 
  */
-package com.mps.app.service;
-
-import com.mps.app.model.entities.MemberBoundary;
+package com.mps.app.team.member;
 
 /**
  * @author Sandeep
  *
  */
-public interface MemberDetailService {
+public interface MemberDetailDAO {
 
 	public MemberBoundary saveUpdateMemberDetails(MemberBoundary m);
 

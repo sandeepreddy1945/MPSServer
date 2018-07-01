@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.mps.app.model.entities;
+package com.mps.app.team.member;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

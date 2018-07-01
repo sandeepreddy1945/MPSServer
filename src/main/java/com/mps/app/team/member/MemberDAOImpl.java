@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.mps.app.repository;
+package com.mps.app.team.member;
 
 import java.util.List;
 
@@ -11,8 +11,6 @@ import javax.persistence.Query;
 
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
-
-import com.mps.app.model.entities.MemberBoundary;
 
 /**
  * @author Sandeep

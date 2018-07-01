@@ -1,12 +1,9 @@
-package com.mps.app.service;
+package com.mps.app.team.member;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.mps.app.model.entities.MemberBoundary;
-import com.mps.app.repository.MemberDAO;
 
 /**
  * 

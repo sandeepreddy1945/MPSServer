@@ -38,7 +38,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
-@JsonPropertyOrder({ "teamDetailId", "teamName", "managerPortalId", "managerPortalId", "managerDetailsBoundary" })
+@JsonPropertyOrder({ "teamDetailId", "teamName", "managerPortalId", "managerPortalId"/* , "managerDetailsBoundary" */ })
 @Entity
 @Audited
 @Table(name = "TeamDetailsTab", indexes = { @Index(columnList = "teamDetailId") })
@@ -63,9 +63,13 @@ public class TeamDetailsBoundary implements Serializable {
 	private String managerPortalId;
 	@JsonProperty("projectName")
 	private String projectName;
-	@JsonProperty("managerDetailsBoundary")
-	@ManyToOne(cascade = CascadeType.DETACH)
-	@JoinColumn(name = "managerId")
-	private ManagerDetailsBoundary managerDetailsBoundary;
+	/*
+	 * @JsonProperty("managerDetailsBoundary")
+	 * 
+	 * @ManyToOne(cascade = CascadeType.DETACH)
+	 * 
+	 * @JoinColumn(name = "managerId") private ManagerDetailsBoundary
+	 * managerDetailsBoundary;
+	 */
 
 }
