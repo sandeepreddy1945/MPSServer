@@ -142,7 +142,8 @@ public class MPSRest {
 	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/api/member/deleteMember", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<MemberBoundary> deleteMember(@RequestBody MemberBoundary member) throws IOException, JSONException {
+	public ResponseEntity<MemberBoundary> deleteMember(@RequestBody MemberBoundary member)
+			throws IOException, JSONException {
 
 		memberService.deleteMember(member);
 		return new ResponseEntity<MemberBoundary>(member, HttpStatus.OK);
@@ -174,7 +175,7 @@ public class MPSRest {
 	@ApiModelProperty(example = "", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/image/fetch", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<String> fetchProfilePic(@RequestHeader HttpHeaders headers)
+	public ResponseEntity<LoginBoundary> fetchProfilePic(@RequestHeader HttpHeaders headers)
 			throws IOException, JSONException {
 
 		JSONObject jsonObject = new JSONObject(JwtHelper
@@ -183,10 +184,10 @@ public class MPSRest {
 		LoginBoundary user = loginService.fecthUserImage(emailId);
 		if (user != null && user.getImageData() != null && user.getImageData().length() > 0) {
 
-			return new ResponseEntity<>(mapper.writeValueAsString(user), HttpStatus.OK);
+			return new ResponseEntity<>(user, HttpStatus.OK);
 
 		} else {
-			return new ResponseEntity<>(mapper.writeValueAsString(user), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(user, HttpStatus.NOT_FOUND);
 		}
 	}
 }
