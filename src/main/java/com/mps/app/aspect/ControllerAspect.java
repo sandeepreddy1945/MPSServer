@@ -8,9 +8,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -30,7 +27,7 @@ public class ControllerAspect {
 	public void logRestBody(JoinPoint joinPoint) {
 		log.info("Kind of Joint Point : " + joinPoint.getKind());
 		log.info("Method Name : " + joinPoint.getSignature().getName());
-		log.info("Value Passed: " + joinPoint.getArgs()[0]);
+		log.info("Value Passed: " + joinPoint.getArgs());
 
 		log.info(String.valueOf((System.currentTimeMillis())));
 	}

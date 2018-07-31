@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mps.app.annotations.RestMethodAdvice;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -71,6 +72,7 @@ public class MPSTeamRest {
 
 	}
 
+	@RestMethodAdvice
 	@ApiOperation(value = "Consumes a String deletes a Team", response = ResponseEntity.class, nickname = "Delete Team")
 	@ApiModelProperty(example = "{\"email:\"sandeepreddy@gmail.com\",\"password\":\"pass\"}", required = true, allowEmptyValue = false)
 	@RequestMapping(value = "/app-api/v1/team/list", method = RequestMethod.GET)
